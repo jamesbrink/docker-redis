@@ -46,7 +46,23 @@ By default Redis asynchronously dumps the dataset on disk. If you can live with 
 **IMPORTANT:** Check the BGREWRITEAOF to check how to rewrite the append log file in background when it gets too big.
 
 
-* `APPENDFSYNC`: default:`everysec`
+**`APPENDFSYNC` : `everysec`**
+
+The fsync() call tells the Operating System to actually write data on disk instead to wait for more data in the output buffer. Some OS will really flush data on disk, some other OS will just try to do it ASAP.
+
+Redis supports three different modes:
+
+
+* `no` Don't fsync, just let the OS flush the data when it wants. Faster.
+* `always` Fsync after every write to the append only log . Slow, Safest.
+* `everysec` Fsync only if one second passed since the last fsync. Compromise.
+
+
+The default is "everysec" that's usually the right compromise between speed and data safety. It's up to you to understand if you can relax this to "no" that will will let the operating system flush the output buffer when it wants, for better performances (but if you can live with the idea of some data loss consider the default persistence mode that's snapshotting), or on the contrary, use "always" that's very slow but a bit safer than everysec.
+
+
+If unsure, use "everysec".
+
 * `NO-APPEND-FSYNC-ON-REWRITE`: default:`no`
 * `VM-ENABLED`: default:`no`
 * `VM-MAX-MEMORY`: default:`0`
