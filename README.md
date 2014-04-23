@@ -16,7 +16,8 @@ Close the connection after a client is idle for N seconds (0 to disable).
 
 **`LOGLEVEL` : `notice`**
 
-Set server verbosity.
+Set server verbosity. The following options are available:
+
 * `debug` A lot of information, useful for development/testing.
 * `verbose` Many rarely useful info, but not a mess like the debug level.
 * `notice` Moderately verbose, what you want in production probably.
