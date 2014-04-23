@@ -75,10 +75,40 @@ This means that while another child is saving the durability of Redis is the sam
 If you have latency problems turn this to `yes`. Otherwise leave it as `no` that is the safest pick from the point of view of durability.
 
 
-* `VM-ENABLED`: default:`no`
-* `VM-MAX-MEMORY`: default:`0`
-* `VM-PAGE-SIZE`: default:`32`
-* `VM-PAGES`: default:`134217728`
+**`VM-ENABLED` : `no`**
+
+Virtual Memory allows Redis to work with datasets bigger than the actual amount of RAM needed to hold the whole dataset in memory. In order to do so very used keys are taken in memory while the other keys are swapped into a swap file, similarly to what operating systems do with memory pages.
+
+To enable VM just set 'vm-enabled' to yes, and set the following three VM parameters accordingly to your needs.
+
+
+**`VM-MAX-MEMORY` : `0`**
+
+vm-max-memory configures the VM to use at max the specified amount of RAM. Everything that deos not fit will be swapped on disk *if* possible, that is, if there is still enough contiguous space in the swap file.
+
+With vm-max-memory 0 the system will swap everything it can. Not a good default, just specify the max amount of RAM you can in bytes, but it's better to leave some margin. For instance specify an amount of RAM that's more or less between 60 and 80% of your free RAM.
+
+
+**`VM-PAGE-SIZE` : `32`**
+
+Redis swap files is split into pages. An object can be saved using multiple contiguous pages, but pages can't be shared between different objects. So if your page is too big, small objects swapped out on disk will waste a lot of space. If you page is too small, there is less space in the swap file (assuming you configured the same number of total swap file pages).
+
+If you use a lot of small objects, use a page size of 64 or 32 bytes. If you use a lot of big objects, use a bigger page size. If unsure, use the default :)
+
+
+**`VM-PAGES` : `134217728`**
+
+Number of total memory pages in the swap file.
+
+Given that the page table (a bitmap of free/used pages) is taken in memory, every 8 pages on disk will consume 1 byte of RAM.
+
+The total swap size is vm-page-size * vm-pages
+
+With the default of 32-bytes memory pages and 134217728 pages Redis will use a 4 GB swap file, that will use 16 MB of RAM for the page table.
+
+It's better to use the smallest acceptable value for your application, but the default is large in order to work in most conditions.
+
+
 * `VM-MAX-THREADS`: default:`4`
 * `HASH-MAX-ZIPMAP-ENTRIES`: default:`512`
 * `HASH-MAX-ZIPMAP-VALUE`: default:`64`
