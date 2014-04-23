@@ -109,10 +109,37 @@ With the default of 32-bytes memory pages and 134217728 pages Redis will use a 4
 It's better to use the smallest acceptable value for your application, but the default is large in order to work in most conditions.
 
 
-* `VM-MAX-THREADS`: default:`4`
-* `HASH-MAX-ZIPMAP-ENTRIES`: default:`512`
-* `HASH-MAX-ZIPMAP-VALUE`: default:`64`
-* `LIST-MAX-ZIPMAP-ENTRIES`: default:`512`
-* `LIST-MAX-ZIPMAP-VALUE`: default: `64`
-* `SET-MAX-INTSET-ENTRIES`: default:`512`
-* `ACTIVEREHASHING`: default:`yes`
+**`VM-MAX-THREADS` : `4`**
+
+Max number of VM I/O threads running at the same time.
+
+This threads are used to read/write data from/to swap file, since they also encode and decode objects from disk to memory or the reverse, a bigger number of threads can help with big objects even if they can't help with I/O itself as the physical device may not be able to couple with many reads/writes operations at the same time.
+
+The special value of `0` turn off threaded I/O and enables the blocking Virtual Memory implementation.
+
+
+**`HASH-MAX-ZIPMAP-ENTRIES` : `512`**
+**`HASH-MAX-ZIPMAP-VALUE` : `64`**
+
+Hashes are encoded in a special way (much more memory efficient) when they have at max a given numer of elements, and the biggest element does not exceed a given threshold.
+
+**`LIST-MAX-ZIPMAP-ENTRIES` : `512`**
+** `LIST-MAX-ZIPMAP-VALUE` : `64`**
+
+Similarly to hashes, small lists are also encoded in a special way in order to save a lot of space.
+
+
+**`SET-MAX-INTSET-ENTRIES` : `512`**
+
+Sets have a special encoding in just one case: when a set is composed of just strings that happens to be integers in radix 10 in the range of 64 bit signed integers. This configuration setting sets the limit in the size of the set in order to use this special memory saving encoding.
+
+**`ACTIVEREHASHING` : `yes`**
+
+Active rehashing uses 1 millisecond every 100 milliseconds of CPU time in order to help rehashing the main Redis hash table (the one mapping top-level keys to values). The hash table implementation redis uses (see dict.c) performs a lazy rehashing: the more operation you run into an hash table that is rhashing, the more rehashing "steps" are performed, so if the server is idle the rehashing is never complete and some more memory is used by the hash table.
+ 
+The default is to use this millisecond 10 times every second in order to active rehashing the main dictionaries, freeing memory when possible.
+
+If unsure: 
+
+use "activerehashing no" if you have hard latency requirements and it is not a good thing in your environment that Redis can reply form time to time to queries with 2 milliseconds delay.
+
