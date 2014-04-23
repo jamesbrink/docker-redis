@@ -11,7 +11,7 @@ RUN apt-get update
 
 RUN apt-get install -y redis-server
 RUN chown -R redis:redis /etc/redis/
-ADD ./redis.sh /var/lib/redis/redis.sh
+ADD ./scripts/redis.sh /var/lib/redis/redis.sh
 RUN chmod +x /var/lib/redis/redis.sh
 
 USER redis
