@@ -11,6 +11,8 @@ RUN apt-get update
 
 RUN apt-get install -y redis-server
 RUN chown -R redis:redis /etc/redis/
+ADD ./redis.sh /var/lib/redis/redis.sh
+RUN chmod +x /var/lib/redis/redis.sh
 
 USER redis
 
@@ -24,6 +26,6 @@ RUN sed -ri 's/^bind .*$/bind 0.0.0.0/g' /etc/redis/redis.conf
 RUN sed -ri 's/^logfile \/var\/log\/redis\/redis-server.log$/logfile \/var\/log\/redis\/redis-server.log\nlogfile stdout/g' /etc/redis/redis.conf
 
 EXPOSE 6379
-CMD ["/usr/bin/redis-server", "/etc/redis/redis.conf"]
+CMD ["/var/lib/redis/redis.sh"]
 
 
