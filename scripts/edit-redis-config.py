@@ -2,6 +2,7 @@
 from os import getenv,putenv
 import re
 
+CONFIG_FILE = '/etc/redis/redis.conf'
 # Ugly I know =/
 ENV_CONFIG_OPTIONS = (
             'timeout',
@@ -26,8 +27,6 @@ ENV_CONFIG_OPTIONS = (
         )
 
 
-
-
 def parse_env_variables():
     config_options = {}
     for env_variable in ENV_CONFIG_OPTIONS:
@@ -39,6 +38,11 @@ def parse_env_variables():
             print 'could not find ' + env_variable
             config_options[env_variable] = None
     return config_options
+
+def print_header(string):
+    print '=' * 80
+    print string
+    print '=' * 80
 
 
 def read_config_file(input_file):
@@ -54,6 +58,19 @@ def read_config_file(input_file):
             config_file.close()
     return config_file_contents
 
+def write_config_file(output_file,config_file_contents):
+    config_file = None
+    try:
+        config_file = open(output_file,'w')
+        for line in config_file_contents:
+            config_file.write(line)
+    except IOError as e:
+        print e
+        return False
+    finally:
+        if config_file:
+            config_file.close()
+    return True
 
 def update_config(config_file_contents,config_options):
     for index,line in enumerate(config_file_contents):
@@ -63,14 +80,20 @@ def update_config(config_file_contents,config_options):
             if config_option:
                 config_option = config_option.group(1)
                 if config_option in config_options:
-                    config_file_contents[index] = '%s %s' % (config_option, config_options[config_option])
+                    config_file_contents[index] = '%s %s\n' % (config_option, config_options[config_option])
     return config_file_contents
 
 
-print 'Altering coniguration using the following settings:'
+print_header('Altering coniguration using the following settings:')
 config_options = parse_env_variables()
-config_file_contents = read_config_file('/etc/redis/redis.conf')
-update_config(config_file_contents,config_options)
+config_file_contents = read_config_file(CONFIG_FILE)
+new_config = update_config(config_file_contents,config_options)
+if write_config_file(CONFIG_FILE,new_config):
+    print_header('Configuration updated')
+else:
+    print_header('Something went wrong!')
+
+
 
 
 
