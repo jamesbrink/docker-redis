@@ -11,8 +11,12 @@ RUN apt-get update
 
 RUN apt-get install -y redis-server
 RUN chown -R redis:redis /etc/redis/
+
 ADD ./scripts/redis.sh /var/lib/redis/redis.sh
 RUN chmod +x /var/lib/redis/redis.sh
+
+ADD ./scripts/edit-redis-config.py /var/lib/redis/edit-redis-config.py
+RUN chmod +x /var/lib/redis/edit-redis-config.py
 
 USER redis
 
@@ -24,7 +28,7 @@ ENV RDBCOMPRESSION yes
 ENV DBFILENAME dump.rdb
 ENV APPENDONLY no
 ENV APPENDFSYNC everysec
-ENV NO-APPEND-FYSNC-ON-REWRITE no
+ENV NO-APPEND-FSYNC-ON-REWRITE no
 ENV VM-ENABLED no
 ENV VM-MAX-MEMORY 0
 ENV VM-PAGE-SIZE 32
