@@ -72,7 +72,7 @@ In order to mitigate this problem it's possible to use the following option that
 
 This means that while another child is saving the durability of Redis is the same as "appendfsync none", that in pratical terms means that it is possible to lost up to 30 seconds of log in the worst scenario (with the default Linux settings).
 
-If you have latency problems turn this to "yes". Otherwise leave it as "no" that is the safest pick from the point of view of durability.
+If you have latency problems turn this to `yes`. Otherwise leave it as `no` that is the safest pick from the point of view of durability.
 
 
 * `VM-ENABLED`: default:`no`
