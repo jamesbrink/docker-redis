@@ -2,7 +2,7 @@
 from os import getenv,putenv
 
 # Ugly I know =/
-configuration_options = (
+CONFIGURATION_OPTIONS = (
             'timeout',
             'loglevel',
             'databases',
@@ -23,10 +23,11 @@ configuration_options = (
             'set-max-intset-entries',
             'activerehashing'
         )
+print 'Altering coniguration using the following settings:\n'
 
-for env_variable in configuration_options:
-    if getenv(env_variable.upper()):
-        env_value = getenv(env_variable.upper())
+for env_variable in CONFIGURATION_OPTIONS:
+    env_value = getenv(env_variable.upper())
+    if env_value:
         print '%s value: %s' % (env_variable,env_value)
     else:
         print 'could not find ' + env_variable
