@@ -89,6 +89,7 @@ def update_config(config_file_contents,config_options):
                     config_file_contents[index] = '%s %s\n' % (config_option, config_options[config_option])
     return config_file_contents
 
+
 # It all starts here
 print_header('Altering coniguration using the following settings:')
 config_options = parse_env_variables()
