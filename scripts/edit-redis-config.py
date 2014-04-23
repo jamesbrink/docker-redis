@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# This script reads existing redis configuration into memory
+# Updates values based on ENV variables, and writes the configuration
+# back out to disk.
 from os import getenv,putenv
 import re
 
@@ -39,6 +42,7 @@ def parse_env_variables():
             config_options[env_variable] = None
     return config_options
 
+
 def print_header(string):
     print '=' * 80
     print string
@@ -58,6 +62,7 @@ def read_config_file(input_file):
             config_file.close()
     return config_file_contents
 
+
 def write_config_file(output_file,config_file_contents):
     config_file = None
     try:
@@ -72,6 +77,7 @@ def write_config_file(output_file,config_file_contents):
             config_file.close()
     return True
 
+
 def update_config(config_file_contents,config_options):
     for index,line in enumerate(config_file_contents):
         if not re.match(r'^#.*$',line):
@@ -83,7 +89,7 @@ def update_config(config_file_contents,config_options):
                     config_file_contents[index] = '%s %s\n' % (config_option, config_options[config_option])
     return config_file_contents
 
-
+# It all starts here
 print_header('Altering coniguration using the following settings:')
 config_options = parse_env_variables()
 config_file_contents = read_config_file(CONFIG_FILE)
