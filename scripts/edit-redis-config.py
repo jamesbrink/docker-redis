@@ -3,6 +3,7 @@
 # Updates values based on ENV variables, and writes the configuration
 # back out to disk.
 from os import getenv,putenv
+import sys
 import re
 
 CONFIG_FILE = '/etc/redis/redis.conf'
@@ -89,7 +90,6 @@ def update_config(config_file_contents,config_options):
                     config_file_contents[index] = '%s %s\n' % (config_option, config_options[config_option])
     return config_file_contents
 
-
 # It all starts here
 print_header('Altering coniguration using the following settings:')
 config_options = parse_env_variables()
@@ -97,11 +97,8 @@ config_file_contents = read_config_file(CONFIG_FILE)
 new_config = update_config(config_file_contents,config_options)
 if write_config_file(CONFIG_FILE,new_config):
     print_header('Configuration updated')
+    sys.exit(0)
 else:
     print_header('Something went wrong!')
-
-
-
-
-
+    sys.exit(1)
 
