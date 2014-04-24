@@ -124,7 +124,7 @@ The special value of `0` turn off threaded I/O and enables the blocking Virtual 
 Hashes are encoded in a special way (much more memory efficient) when they have at max a given numer of elements, and the biggest element does not exceed a given threshold.
 
 **`LIST-MAX-ZIPMAP-ENTRIES` : `512`**
-** `LIST-MAX-ZIPMAP-VALUE` : `64`**
+**`LIST-MAX-ZIPMAP-VALUE` : `64`**
 
 Similarly to hashes, small lists are also encoded in a special way in order to save a lot of space.
 
