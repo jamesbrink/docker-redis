@@ -317,3 +317,13 @@ If unsure:
 
 use `ACTIVEREHASHING=no` if you have hard latency requirements and it is not a good thing in your environment that Redis can reply form time to time to queries with 2 milliseconds delay.
 
+
+##TODO##
+
+Not all configuration options are available at this time.
+
+* Snapshoting options
+* Replication options
+* Security options
+* Limits options
+* Setup Data Volume
