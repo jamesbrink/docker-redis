@@ -3,7 +3,7 @@ Docker Container for Redis 2.2
 
 A highly configurable Docker container running [Redis 2.2.12](http://redis.io/)
 
-#Usage#
+##Usage##
 
 To run with default settings
 
@@ -19,7 +19,7 @@ james@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
 
 This will fire off Redis with debug logging. See the following example of the output.
 
-    ames@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
+    james@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
     ================================================================================
     Altering coniguration using the following settings:
     ================================================================================
@@ -49,10 +49,114 @@ This will fire off Redis with debug logging. See the following example of the ou
     [1] 24 Apr 03:24:08 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix     this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
     [1] 24 Apr 03:24:08 * The server is now ready to accept connections on port 6379
     [1] 24 Apr 03:24:08 - 0 clients connected (0 slaves), 790664 bytes in use
-    [1] 24 Apr 03:24:13 - 0 clients connected (0 slaves), 790664 bytes in use
-    [1] 24 Apr 03:24:18 - 0 clients connected (0 slaves), 790664 bytes in use
-    [1] 24 Apr 03:24:23 - 0 clients connected (0 slaves), 790664 bytes in use
 
+
+
+##Container Linking##
+
+Here is a simple example of container linking. First fire up redis with desired options, here I will be using debug logging.
+
+```
+james@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
+```
+
+    james@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
+    ================================================================================
+    Altering coniguration using the following settings:
+    ================================================================================
+    timeout value: 300
+    loglevel value: debug
+    databases value: 16
+    rdbcompression value: yes
+    dbfilename value: dump.rdb
+    appendonly value: no
+    appendfsync value: everysec
+    no-append-fsync-on-rewrite value: no
+    vm-enabled value: no
+    vm-max-memory value: 0
+    vm-page-size value: 32
+    vm-pages value: 134217728
+    vm-max-threads value: 4
+    hash-max-zipmap-entries value: 512
+    hash-max-zipmap-value value: 64
+    list-max-zipmap-entries value: 512
+    list-max-zipmap-value value: 64
+    set-max-intset-entries value: 512
+    activerehashing value: yes
+    ================================================================================
+    Configuration updated
+    ================================================================================
+    [1] 24 Apr 03:24:08 * Server started, Redis version 2.2.12
+    [1] 24 Apr 03:24:08 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix     this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+    [1] 24 Apr 03:24:08 * The server is now ready to accept connections on port 6379
+    [1] 24 Apr 03:24:08 - 0 clients connected (0 slaves), 790664 bytes in use
+    ....
+    
+    
+Now that we have redis up and running, lets link it in to a new container using the alias `redis`
+
+```
+james@ubuntu:~/repositories/docker-redis$ docker run -i -t --link redis:redis ubuntu bash
+```
+
+You can see below that all of the configured options are available as ENV variables
+
+    james@ubuntu:~/repositories/docker-redis$ docker run -i -t --link redis:redis ubuntu bash
+    root@685dbc559232:/# env
+    REDIS_PORT_6379_TCP_PROTO=tcp
+    REDIS_ENV_HASH-MAX-ZIPMAP-VALUE=64
+    HOSTNAME=685dbc559232
+    REDIS_ENV_LOGLEVEL=debug
+    REDIS_ENV_RDBCOMPRESSION=yes
+    TERM=xterm
+    REDIS_ENV_DBFILENAME=dump.rdb
+    REDIS_NAME=/romantic_shockley/redis
+    REDIS_ENV_LIST-MAX-ZIPMAP-ENTRIES=512
+    REDIS_PORT_6379_TCP_ADDR=172.17.0.9
+    REDIS_ENV_DATABASES=16
+    REDIS_ENV_NO-APPEND-FSYNC-ON-REWRITE=no
+    REDIS_PORT_6379_TCP_PORT=6379
+    REDIS_ENV_LIST-MAX-ZIPMAP-VALUE=64
+    REDIS_ENV_TIMEOUT=300
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    REDIS_ENV_VM-ENABLED=no
+    PWD=/
+    REDIS_ENV_SET-MAX-INTSET-ENTRIES=512
+    REDIS_ENV_VM-PAGES=134217728
+    REDIS_PORT_6379_TCP=tcp://172.17.0.9:6379
+    REDIS_ENV_ACTIVEREHASHING=yes
+    REDIS_ENV_HASH-MAX-ZIPMAP-ENTRIES=512
+    REDIS_ENV_VM-MAX-MEMORY=0
+    SHLVL=1
+    REDIS_PORT=tcp://172.17.0.9:6379
+    HOME=/
+    REDIS_ENV_VM-MAX-THREADS=4
+    REDIS_ENV_APPENDONLY=no
+    REDIS_ENV_VM-PAGE-SIZE=32
+    REDIS_ENV_APPENDFSYNC=everysec
+    _=/usr/bin/env
+
+    
+So now we can connect to the redis host like so (Make sure to install the redis-cli, on Ububtu use apt-get install redis-server. There is no standard cli package on Ubuntu).
+
+    root@685dbc559232:/# redis-cli -h $REDIS_PORT_6379_TCP_ADDR
+    redis 172.17.0.9:6379> set myname james
+    OK
+    redis 172.17.0.9:6379> get myname
+    "james"
+    
+    
+If you look at the output of the redis container you will also see something like the following.
+
+    [1] 24 Apr 03:50:03 - Accepted 172.17.0.10:35526
+    [1] 24 Apr 03:50:07 - 1 clients connected (0 slaves), 798768 bytes in use
+    [1] 24 Apr 03:50:57 * 1 changes in 900 seconds. Saving...
+    [1] 24 Apr 03:50:57 * Background saving started by pid 8
+    [8] 24 Apr 03:50:57 * DB saved on disk
+    [1] 24 Apr 03:50:58 * Background saving terminated with success
+    [1] 24 Apr 03:50:58 - DB 0: 1 keys (0 volatile) in 4 slots HT.
+    [1] 24 Apr 03:50:58 - 1 clients connected (0 slaves), 799016 bytes in use
+    
 
 
 ##Environment Variables##
