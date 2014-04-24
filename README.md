@@ -8,13 +8,16 @@ WIP
 
 
 ##Environment Variables##
-Below are the avaiable variables that can be set. Each section lists **`VARIABLE_NAME : DEFAULT_VALUE`**. These settings can be set at runtime, and are optional.
+Below are the avaiable variables that can be set. Each section lists the default values - `VARIABLE_NAME=default_value`. These settings can be set at runtime, and are optional.
 
-**`TIMEOUT` : `300`**
+
+####TIMEOUT####
+`TIMEOUT=300`
 
 Close the connection after a client is idle for N seconds (0 to disable).
 
-**`LOGLEVEL` : `notice`**
+####LOGLEVEL####
+`LOGLEVEL=notice`
 
 Set server verbosity. The following options are available:
 
@@ -22,8 +25,9 @@ Set server verbosity. The following options are available:
 * `verbose` Many rarely useful info, but not a mess like the debug level.
 * `notice` Moderately verbose, what you want in production probably.
 * `warning` Only very important / critical messages are logged.
-    
-**`DATABASES` : `16`**
+
+####DATABASES####
+`DATABASES=16`
 
 Set the number of databases. The default database is DB 0, you can select a different one on a per-connection basis using SELECT <dbid> where dbid is a number between 0 and 'databases'-1.
 
