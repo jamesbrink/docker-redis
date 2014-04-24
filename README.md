@@ -1,9 +1,57 @@
-docker-redis
+Docker Container for Redis 2.2
 ============
 
-A docker container running Redis
+A highly configurable Docker container running [Redis 2.2.12](http://redis.io/)
 
-WIP
+#Usage#
+
+To run with default settings
+
+```
+james@ubuntu:~$ docker run -P --name redis jamesbrink/redis
+```
+
+To run with customized settings, for example log level debug (see the Enviroment Variables section below for configuration options).
+
+```
+james@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
+```
+
+This will fire off Redis with debug logging. See the following example of the output.
+
+    ames@ubuntu:~$ docker run -P --name redis -e LOGLEVEL=debug jamesbrink/redis
+    ================================================================================
+    Altering coniguration using the following settings:
+    ================================================================================
+    timeout value: 300
+    loglevel value: debug
+    databases value: 16
+    rdbcompression value: yes
+    dbfilename value: dump.rdb
+    appendonly value: no
+    appendfsync value: everysec
+    no-append-fsync-on-rewrite value: no
+    vm-enabled value: no
+    vm-max-memory value: 0
+    vm-page-size value: 32
+    vm-pages value: 134217728
+    vm-max-threads value: 4
+    hash-max-zipmap-entries value: 512
+    hash-max-zipmap-value value: 64
+    list-max-zipmap-entries value: 512
+    list-max-zipmap-value value: 64
+    set-max-intset-entries value: 512
+    activerehashing value: yes
+    ================================================================================
+    Configuration updated
+    ================================================================================
+    [1] 24 Apr 03:24:08 * Server started, Redis version 2.2.12
+    [1] 24 Apr 03:24:08 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix     this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+    [1] 24 Apr 03:24:08 * The server is now ready to accept connections on port 6379
+    [1] 24 Apr 03:24:08 - 0 clients connected (0 slaves), 790664 bytes in use
+    [1] 24 Apr 03:24:13 - 0 clients connected (0 slaves), 790664 bytes in use
+    [1] 24 Apr 03:24:18 - 0 clients connected (0 slaves), 790664 bytes in use
+    [1] 24 Apr 03:24:23 - 0 clients connected (0 slaves), 790664 bytes in use
 
 
 
