@@ -1,20 +1,20 @@
-# Redis 2.2.12
+# Redis 2.8.4
 #
-# VERSION       1.0
+# VERSION       2.0
 
-FROM ubuntu:12.04
+FROM ubuntu:14.04
 MAINTAINER James Brink, brink.james@gmail.com
 
-# Make sure the package repository is up to date
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
+# Install Python for startup scripts
+RUN apt-get install -y python
 
+# Install Redis
 RUN apt-get install -y redis-server
 RUN chown -R redis:redis /etc/redis/
 
+# Copy in startup/configuration scripts
 ADD ./scripts/redis.sh /var/lib/redis/redis.sh
 RUN chmod +x /var/lib/redis/redis.sh
-
 ADD ./scripts/edit-redis-config.py /var/lib/redis/edit-redis-config.py
 RUN chmod +x /var/lib/redis/edit-redis-config.py
 
@@ -45,9 +45,7 @@ ENV ACTIVEREHASHING yes
 RUN sed -ri 's/^daemonize (yes|no)$/daemonize no/g' /etc/redis/redis.conf
 RUN sed -ri 's/^bind .*$/bind 0.0.0.0/g' /etc/redis/redis.conf
 # Send logs to foreground as well
-RUN sed -ri 's/^logfile \/var\/log\/redis\/redis-server.log$/logfile \/var\/log\/redis\/redis-server.log\nlogfile stdout/g' /etc/redis/redis.conf
+RUN sed -ri 's/^logfile \/var\/log\/redis\/redis-server.log$/logfile \/var\/log\/redis\/redis-server.log\nlogfile ""/g' /etc/redis/redis.conf
 
 EXPOSE 6379
 CMD ["/var/lib/redis/redis.sh"]
-
-
