@@ -18,7 +18,7 @@ RUN chmod +x /var/lib/redis/redis.sh
 ADD ./scripts/edit-redis-config.py /var/lib/redis/edit-redis-config.py
 RUN chmod +x /var/lib/redis/edit-redis-config.py
 
-USER redis
+#USER redis
 
 # Configuration options
 ENV TIMEOUT 300
