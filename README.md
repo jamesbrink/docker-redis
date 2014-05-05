@@ -1,7 +1,7 @@
-Docker Container for Redis 2.2
+Docker Container for Redis 2.8.4
 ============
 
-A highly configurable Docker container running [Redis 2.2.12](http://redis.io/)
+A highly configurable Docker container running [Redis 2.8.4](http://redis.io/)
 
 ##Usage##
 
