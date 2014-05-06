@@ -1,9 +1,10 @@
 # Redis 2.8.4
 #
 # VERSION       2.0
-
 FROM ubuntu:14.04
 MAINTAINER James Brink, brink.james@gmail.com
+
+RUN echo "Invalidate Cache!"
 
 # Install Python for startup scripts
 RUN apt-get install -y python
